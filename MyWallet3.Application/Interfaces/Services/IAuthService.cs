@@ -9,10 +9,9 @@ namespace MyWallet3.Application.Interfaces.Services
 {
     public interface IAuthService
     {
-        // Метод регистрации
         Task RegisterAsync(string login, string password);
-
-        // Метод логина (возвращает пару токенов)
         Task<JwtTokens> LoginAsync(string login, string password);
+        Task<JwtTokens> RefreshTokensAsync(string oldRefreshToken);
+        Task LogoutAsync(string refreshToken);
     }
 }

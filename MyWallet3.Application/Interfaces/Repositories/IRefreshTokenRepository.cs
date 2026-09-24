@@ -9,13 +9,8 @@ namespace MyWallet3.Application.Interfaces.Repositories
 {
     public interface IRefreshTokenRepository
     {
-        // Сохранить выданный рефреш-токен в базу
         Task CreateAsync(RefreshToken token);
-
-        // Найти токен в базе по самой строке токена
         Task<RefreshToken?> GetByTokenAsync(string token);
-
-        // Удалить токен из базы (при логауте)
         Task DeleteAsync(Guid tokenId);
     }
 }

@@ -32,14 +32,12 @@ namespace MyWallet3.Application.Services.Auth
 
         public async Task RegisterAsync(string login, string password)
         {
-            // 1. Проверяем, нет ли уже такого пользователя
             var existingUser = await _userRepository.GetByLoginAsync(login);
             if (existingUser != null)
             {
                 throw new Exception("Пользователь с таким логином уже существует");
             }
 
-            // 2. Создаем пользователя, хэшируя пароль
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -47,41 +45,76 @@ namespace MyWallet3.Application.Services.Auth
                 PasswordHash = _passwordHasher.Generate(password)
             };
 
-            // 3. Сохраняем в БД
             await _userRepository.CreateAsync(user);
         }
 
         public async Task<JwtTokens> LoginAsync(string login, string password)
         {
-            // 1. Ищем пользователя
             var user = await _userRepository.GetByLoginAsync(login);
             if (user == null)
             {
                 throw new Exception("Неверный логин или пароль");
             }
 
-            // 2. Проверяем пароль
             var isPasswordValid = _passwordHasher.Verify(password, user.PasswordHash);
             if (!isPasswordValid)
             {
                 throw new Exception("Неверный логин или пароль");
             }
 
-            // 3. Генерируем токены
             var tokens = _jwtProvider.GenerateTokens(user);
 
-            // 4. Запоминаем рефреш-токен в базу (чтобы потом можно было его проверить)
             var refreshToken = new RefreshToken
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 Token = tokens.RefreshToken,
-                ExpiresAt = DateTime.UtcNow.AddDays(30) // Выдаем на 30 дней
+                ExpiresAt = DateTime.UtcNow.AddDays(30) 
             };
             await _refreshTokenRepository.CreateAsync(refreshToken);
 
-            // 5. Отдаем токены наружу
             return tokens;
+        }
+
+        public async Task<JwtTokens> RefreshTokensAsync(string oldRefreshToken)
+        {
+            var tokenRecord = await _refreshTokenRepository.GetByTokenAsync(oldRefreshToken);
+
+            if (tokenRecord == null || tokenRecord.ExpiresAt < DateTime.UtcNow)
+            {
+                throw new Exception("Токен недействителен или просрочен");
+            }
+
+            var user = await _userRepository.GetByIdAsync(tokenRecord.UserId);
+            if (user == null)
+            {
+                throw new Exception("Пользователь не найден");
+            }
+
+            var newTokens = _jwtProvider.GenerateTokens(user);
+
+            var newRefreshToken = new RefreshToken
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                Token = newTokens.RefreshToken,
+                ExpiresAt = DateTime.UtcNow.AddDays(30)
+            };
+            await _refreshTokenRepository.CreateAsync(newRefreshToken);
+
+            await _refreshTokenRepository.DeleteAsync(tokenRecord.Id);
+
+            return newTokens;
+        }
+
+        public async Task LogoutAsync(string refreshToken)
+        {
+            var tokenRecord = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
+
+            if (tokenRecord != null)
+            {
+                await _refreshTokenRepository.DeleteAsync(tokenRecord.Id);
+            }
         }
     }
 }

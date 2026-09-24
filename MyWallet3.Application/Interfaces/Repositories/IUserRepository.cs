@@ -9,10 +9,8 @@ namespace MyWallet3.Application.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        // Найти пользователя по логину (может вернуть null, если такого нет)
         Task<User?> GetByLoginAsync(string login);
-
-        // Сохранить нового пользователя в базу
+        Task<User?> GetByIdAsync(Guid id);
         Task CreateAsync(User user);
     }
 }
