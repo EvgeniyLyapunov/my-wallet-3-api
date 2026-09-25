@@ -27,7 +27,13 @@ namespace MyWallet3.Infrastructure.Repositories
 INSERT INTO refresh_tokens (id, user_id, token, expires_at) 
 VALUES (@Id, @UserId, @Token, @ExpiresAt)";
 
-                await connection.ExecuteAsync(sql, token);
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", token.Id);
+                parameters.Add("@UserId", token.UserId);
+                parameters.Add("@Token", token.Token);
+                parameters.Add("@ExpiresAt", token.ExpiresAt);
+
+                await connection.ExecuteAsync(sql, parameters);
             }
 
         }
@@ -45,7 +51,10 @@ SELECT
 FROM refresh_tokens 
 WHERE token = @Token";
 
-                return await connection.QuerySingleOrDefaultAsync<RefreshToken>(sql, new { Token = token });
+                var parameters = new DynamicParameters();
+                parameters.Add("@Token", token);
+
+                return await connection.QuerySingleOrDefaultAsync<RefreshToken>(sql, parameters);
             }
 
         }
@@ -56,7 +65,10 @@ WHERE token = @Token";
             {
                 string sql = @"DELETE FROM refresh_tokens WHERE id = @Id";
 
-                await connection.ExecuteAsync(sql, new { Id = tokenId });
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", tokenId);
+
+                await connection.ExecuteAsync(sql, parameters);
             }
         }
     }

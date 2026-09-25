@@ -1,4 +1,3 @@
-
 using Microsoft.OpenApi.Models;
 using MyWallet3.API.Extensions;
 using Serilog;
@@ -12,6 +11,9 @@ namespace MyWallet3.API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.ConfigureSerilog();
+            builder.Services.AddProjectServices(builder.Configuration);
+            builder.Services.AddJwtAuthentication(builder.Configuration);
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
@@ -54,6 +56,7 @@ namespace MyWallet3.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
