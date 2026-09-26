@@ -36,6 +36,14 @@ namespace MyWallet3.API
 
             app.MapControllers();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+                var connectionString = config.GetConnectionString("DefaultConnection");
+
+                MyWallet3.Infrastructure.Database.DatabaseMigrator.Migrate(connectionString!);
+            }
+
             app.Run();
         }
     }
