@@ -13,36 +13,10 @@ namespace MyWallet3.API
             builder.ConfigureSerilog();
             builder.Services.AddProjectServices(builder.Configuration);
             builder.Services.AddJwtAuthentication(builder.Configuration);
+            builder.Services.AddSwaggerDocumentation();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "Введите JWT токен авторизации в формате: Bearer {ваш_токен}",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer"
-                });
-
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-            });
 
             var app = builder.Build();
 
