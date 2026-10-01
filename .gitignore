@@ -480,3 +480,29 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# =========================
+# FRONTEND (Quasar / Vue 3)
+# =========================
+MyWallet3.Front/node_modules/
+MyWallet3.Front/.quasar/
+MyWallet3.Front/dist/
+MyWallet3.Front/dist-ssr/
+MyWallet3.Front/src-capacitor/www/
+MyWallet3.Front/src-cordova/platforms/
+MyWallet3.Front/src-cordova/plugins/
+MyWallet3.Front/src-cordova/www/
+MyWallet3.Front/src-bex/www/
+MyWallet3.Front/.eslintcache
+
+# Логи пакетных менеджеров
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.DS_Store
+.thumbs.db
+node_modules
+
+# .env files
+.env*
