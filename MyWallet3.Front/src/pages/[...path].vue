@@ -1,21 +1,20 @@
 <template>
-  <div
-    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
-  >
+  <q-page class="flex flex-center text-center">
     <div>
-      <div style="font-size: 30vh"> 404 </div>
-
-      <div class="text-h2" style="opacity: 0.4"> Oops. Nothing here... </div>
-
+      <div style="font-size: 5vh">404</div>
+      <div class="text-h4" style="opacity:.4">Страница не найдена</div>
       <q-btn
         class="q-mt-xl"
-        color="white"
-        text-color="blue"
+        color="primary"
         unelevated
         to="/"
-        label="Go Home"
+        label="На главную"
         no-caps
       />
     </div>
-  </div>
+  </q-page>
 </template>
+
+<script setup lang="ts">
+// Пусто
+</script>
