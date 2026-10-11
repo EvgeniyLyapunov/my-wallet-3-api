@@ -10,6 +10,12 @@ export default defineConfig({
       schemas: 'src/api/generated/model', 
       client: 'axios',
       clean: true,
+       override: {
+        mutator: {
+          path: 'src/api/axios-instance.ts',
+          name: 'customAxiosInstance',
+        },
+      },
     },
     hooks: {
       afterAllFilesWrite: 'npx prettier --write', 

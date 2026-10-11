@@ -4,9 +4,6 @@
  * MyWallet3.API
  * OpenAPI spec version: 1.0
  */
-import axios from "axios";
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-
 import type {
   JwtTokensResult,
   LoginRequest,
@@ -15,87 +12,57 @@ import type {
   Result,
 } from "../model";
 
-export const getAuth = (axiosInstance: AxiosInstance = axios) => {
-  const postApiAuthRegister = (
-    registerRequest?: RegisterRequest,
-    options?: AxiosRequestConfig,
-  ): Promise<AxiosResponse<Result>> => {
-    return axiosInstance.post(`/api/Auth/register`, registerRequest, options);
+import { customAxiosInstance } from "../../axios-instance";
+
+export const getAuth = () => {
+  const postApiAuthRegister = (registerRequest?: RegisterRequest) => {
+    return customAxiosInstance<Result>({
+      url: `/api/Auth/register`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: registerRequest,
+    });
   };
-  const getPostApiAuthRegisterUrl = () => {
-    return axiosInstance
-      .create({
-        baseURL: "",
-        params: null,
-      })
-      .getUri({
-        url: `/api/Auth/register`,
-        baseURL: "",
-      });
+  const postApiAuthLogin = (loginRequest?: LoginRequest) => {
+    return customAxiosInstance<JwtTokensResult>({
+      url: `/api/Auth/login`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: loginRequest,
+    });
   };
-  const postApiAuthLogin = (
-    loginRequest?: LoginRequest,
-    options?: AxiosRequestConfig,
-  ): Promise<AxiosResponse<JwtTokensResult>> => {
-    return axiosInstance.post(`/api/Auth/login`, loginRequest, options);
+  const postApiAuthRefresh = (refreshRequest?: RefreshRequest) => {
+    return customAxiosInstance<JwtTokensResult>({
+      url: `/api/Auth/refresh`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: refreshRequest,
+    });
   };
-  const getPostApiAuthLoginUrl = () => {
-    return axiosInstance
-      .create({
-        baseURL: "",
-        params: null,
-      })
-      .getUri({
-        url: `/api/Auth/login`,
-        baseURL: "",
-      });
-  };
-  const postApiAuthRefresh = (
-    refreshRequest?: RefreshRequest,
-    options?: AxiosRequestConfig,
-  ): Promise<AxiosResponse<JwtTokensResult>> => {
-    return axiosInstance.post(`/api/Auth/refresh`, refreshRequest, options);
-  };
-  const getPostApiAuthRefreshUrl = () => {
-    return axiosInstance
-      .create({
-        baseURL: "",
-        params: null,
-      })
-      .getUri({
-        url: `/api/Auth/refresh`,
-        baseURL: "",
-      });
-  };
-  const postApiAuthLogout = (
-    refreshRequest?: RefreshRequest,
-    options?: AxiosRequestConfig,
-  ): Promise<AxiosResponse<Result>> => {
-    return axiosInstance.post(`/api/Auth/logout`, refreshRequest, options);
-  };
-  const getPostApiAuthLogoutUrl = () => {
-    return axiosInstance
-      .create({
-        baseURL: "",
-        params: null,
-      })
-      .getUri({
-        url: `/api/Auth/logout`,
-        baseURL: "",
-      });
+  const postApiAuthLogout = (refreshRequest?: RefreshRequest) => {
+    return customAxiosInstance<Result>({
+      url: `/api/Auth/logout`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: refreshRequest,
+    });
   };
   return {
     postApiAuthRegister,
     postApiAuthLogin,
     postApiAuthRefresh,
     postApiAuthLogout,
-    getPostApiAuthRegisterUrl,
-    getPostApiAuthLoginUrl,
-    getPostApiAuthRefreshUrl,
-    getPostApiAuthLogoutUrl,
   };
 };
-export type PostApiAuthRegisterResult = AxiosResponse<Result>;
-export type PostApiAuthLoginResult = AxiosResponse<JwtTokensResult>;
-export type PostApiAuthRefreshResult = AxiosResponse<JwtTokensResult>;
-export type PostApiAuthLogoutResult = AxiosResponse<Result>;
+export type PostApiAuthRegisterResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getAuth>["postApiAuthRegister"]>>
+>;
+export type PostApiAuthLoginResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getAuth>["postApiAuthLogin"]>>
+>;
+export type PostApiAuthRefreshResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getAuth>["postApiAuthRefresh"]>>
+>;
+export type PostApiAuthLogoutResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getAuth>["postApiAuthLogout"]>>
+>;
